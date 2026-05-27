@@ -1,0 +1,46 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Change to "mysql" if you prefer
+  url      = env("DATABASE_URL")
+}
+
+model Shabad {
+  id        Int    @id @default(autoincrement())
+  raag      String
+  author    String
+  angNumber Int
+
+  // Relation: A Shabad contains many Verses
+  verses Verse[]
+}
+
+model Verse {
+  id          Int @id @default(autoincrement())
+  shabadId    Int
+  verseNumber Int
+
+  // The linguistic texts
+  gurmukhiText       String
+  devanagariText     String? // Optional, in case some are pending
+  englishTranslation String?
+
+  // Relations
+  shabad       Shabad       @relation(fields: [shabadId], references: [id], onDelete: Cascade)
+  commentaries Commentary[]
+}
+
+model Commentary {
+  id            Int    @id @default(autoincrement())
+  verseId       Int
+  type          String // e.g., 'Sanatan', 'Nanakpanthi', 'Traditional'
+  content       String @db.Text
+  scholarSource String
+
+  // Relation: Commentary belongs to a specific Verse
+  verse Verse @relation(fields: [verseId], references: [id], onDelete: Cascade)
+}
