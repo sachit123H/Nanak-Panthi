@@ -37,10 +37,9 @@ model Verse {
 model Commentary {
   id            Int    @id @default(autoincrement())
   verseId       Int
-  type          String // e.g., 'Sanatan', 'Nanakpanthi', 'Traditional'
+  type          String 
   content       String @db.Text
   scholarSource String
-
-  // Relation: Commentary belongs to a specific Verse
-  verse Verse @relation(fields: [verseId], references: [id], onDelete: Cascade)
+  
+  verse         Verse  @relation(fields: [verseId], references: [id], onDelete: Cascade)
 }
